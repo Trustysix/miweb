@@ -1,0 +1,8 @@
+Django==4.0.5
+djangorestframework
+psycopg2-binary==2.9.3
+django-cors-headers
+supabase-py
+gunicorn==20.1.0
+whitenoise
+```

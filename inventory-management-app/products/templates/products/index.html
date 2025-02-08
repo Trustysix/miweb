@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory Management</h1>
+        <form method="POST" action="{% url 'add_product' %}">
+            {% csrf_token %}
+            <label for="product">Selecciona un producto:</label>
+            <select name="product" id="product" required>
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+            <label for="quantity">Cantidad:</label>
+            <input type="number" name="quantity" id="quantity" required>
+            <button type="submit">Registrar Salida</button>
+        </form>
+
+        <h2>Lista de Productos Registrados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.product.name }}</td>
+                        <td>{{ entry.quantity }}</td>
+                        <td>{{ entry.date|date:"Y-m-d" }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'delete_product' entry.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'add_product' %}">Add Product</a>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }} - {{ product.quantity }} <a href="{% url 'delete_product' product.id %}">Delete</a></li>
+        {% endfor %}
+    </ul>
+    <h2>Inventory Records</h2>
+    <ul>
+        {% for record in inventory_records %}
+            <li>{{ record.product.name }} - {{ record.quantity }} - {{ record.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
